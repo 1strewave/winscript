@@ -2,7 +2,7 @@
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue?logo=windows)
 ![Language](https://img.shields.io/badge/language-Go-00ADD8?logo=go)
-![License](https://img.shields.io/github/license/yourusername/winscript)
+![License](https://img.shields.io/github/license/1strewave/winscript)
 ![Status](https://img.shields.io/badge/status-alpha-red)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
 
