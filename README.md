@@ -6,24 +6,24 @@
 ![Status](https://img.shields.io/badge/status-alpha-red)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
 
-> **WinScript** is a simple scripting language for automating actions on Windows.  
-> A lightweight AppleScript-style tool written in Go with a Cobra-powered CLI.
+> ⚡ **WinScript** is a lightweight scripting language for Windows automation.  
+> Inspired by AppleScript, written in Go, and designed to be simple, readable, and powerful.
 
 ---
 
-## Features
+## ✨ Features
 
-- Launch and control applications
-- Simulate keystrokes and text input
-- Mouse movement and clicks
-- Simple delays (`wait`)
-- Clean and readable syntax
-- Command-line interface via `winscript`
-- Built entirely in Go, easily extendable
+- 🖥 Launch and control Windows applications
+- 🎯 Simulate mouse movement and clicks
+- ⌨️ Simulate keystrokes and text input
+- ⏱ Simple `wait` and delay functionality
+- 📜 Human-readable `.ws` syntax
+- 🔧 Cross-compatible CLI with Cobra
+- 🧩 Easy to extend with Go
 
 ---
 
-## Example Script
+## 🚀 Quick Example
 
 ```winscript
 open "notepad.exe"
@@ -33,11 +33,11 @@ move_mouse 400 300
 click "left"
 ```
 
-Scripts are saved with the `.ws` extension.
+> 📁 Save your scripts as `.ws` files.
 
 ---
 
-## Installation
+## 🔧 Installation
 
 ```bash
 git clone https://github.com/yourusername/winscript.git
@@ -45,70 +45,76 @@ cd winscript
 go build -o winscript
 ```
 
-Now the `winscript` CLI is available for use.
+> ✅ Optionally, add the built binary folder to your system `PATH` for global access.
+
+To install the path permanently via script, you can use `install.bat`.
 
 ---
 
-## CLI
+## 💻 CLI Usage
 
-WinScript uses a Cobra-based CLI. Available commands:
+WinScript provides a command-line interface using Cobra.
+
+### 🔹 Available Commands:
 
 ```bash
-winscript [file]             # Run a script
-winscript run script.ws      # Explicit script run
-winscript version            # Show version
-winscript help               # Display help
+winscript [file]           # Run a script file directly
+winscript run script.ws    # Explicit 'run' command
+winscript help             # Show available commands and keywords
+winscript docs             # Show documentation path
+winscript version          # Print current version
 ```
 
-### Examples
+### 🔸 Examples:
 
 ```bash
 winscript hello.ws
 winscript run scripts/boot.ws
-winscript version
+winscript help
 ```
 
 ---
 
-## Language Syntax
+## 🧠 Language Keywords
 
-| Command       | Description                      | Example                           |
+| Keyword       | Description                      | Example                           |
 |---------------|----------------------------------|-----------------------------------|
 | `open`        | Launch an application            | `open "notepad.exe"`              |
 | `type`        | Type a string                    | `type "Hello, world!"`            |
-| `press`       | Press a key                      | `press "enter"`                   |
-| `hotkey`      | Press key combination            | `hotkey "ctrl+s"`                 |
-| `move_mouse`  | Move the mouse cursor            | `move_mouse 500 300`              |
-| `click`       | Perform a mouse click            | `click "left"`                    |
-| `wait`        | Pause execution                  | `wait 2s`                          |
-| `log`         | Output to console                | `log "Script started"`            |
+| `press`       | Press a single key               | `press "enter"`                   |
+| `hotkey`      | Key combination                  | `hotkey "ctrl+s"`                 |
+| `move_mouse`  | Move mouse cursor                | `move_mouse 500 300`              |
+| `click`       | Mouse click                      | `click "left"`                    |
+| `wait`        | Wait for time                    | `wait 2s`                         |
+| `log`         | Output text to console           | `log "Starting script..."`        |
 
-Full command list coming soon in `docs/commands.md`.
+📘 More details coming soon in [`docs/commands.md`](docs/commands.md)
 
 ---
 
-## Roadmap
+## 🛣 Roadmap
 
-- [x] Basic interpreter
-- [x] CLI interface using Cobra
+- [x] CLI interface with Cobra
+- [x] Script parser and interpreter
+- [x] Core automation commands
 - [ ] Variables (`set name = "Alice"`)
-- [ ] Conditionals (`if`, `else`)
+- [ ] Conditional logic (`if`, `else`)
 - [ ] Loops (`repeat`, `while`)
-- [ ] Functions and blocks
-- [ ] REPL support
+- [ ] User-defined functions
+- [ ] REPL / interactive mode
 - [ ] GUI interface
-- [ ] Installer (.msi) support
+- [ ] Windows Installer (`.msi`)
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-Pull requests are welcome!  
-Open issues, suggest features, report bugs — all contributions are appreciated.
+Pull requests, issues, ideas, and feedback are welcome.  
+If you’d like to help shape the future of WinScript — let’s build it together!
 
 ---
 
-## Author
+## 🧑‍💻 Author
 
-WinScript is a personal project designed to explore scripting language development and Windows automation.  
-Made with love for simplicity, Go, and productivity.
+**WinScript** is a hobby project created by [@1strewave](https://github.com/1strewave) to explore language design and automation on Windows using Go.  
+Made with ❤️ for code, simplicity, and creativity.
