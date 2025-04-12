@@ -60,8 +60,8 @@ WinScript provides a command-line interface using Cobra.
 ```bash
 winscript [file]           # Run a script file directly
 winscript run script.ws    # Explicit 'run' command
-winscript help             # Show available commands and keywords
-winscript docs             # Show documentation path
+winscript help             # Show available commands
+winscript docs             # Show documentation keywords
 winscript version          # Print current version
 ```
 
@@ -70,7 +70,7 @@ winscript version          # Print current version
 ```bash
 winscript hello.ws
 winscript run scripts/boot.ws
-winscript help
+winscript docs
 ```
 
 ---
