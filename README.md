@@ -40,7 +40,7 @@ click "left"
 ## 🔧 Installation
 
 ```bash
-git clone https://github.com/yourusername/winscript.git
+git clone https://github.com/1strewave/winscript.git
 cd winscript
 go build -o winscript
 ```
