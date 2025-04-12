@@ -18,14 +18,13 @@ type CommandHandler func(cmd models.Command) error
 type CommandRegistry map[string]CommandHandler
 
 func NewCommandRegistry() CommandRegistry {
-	registry := CommandRegistry{
+	return CommandRegistry{
 		"open":  handleOpen,
 		"type":  handleType,
 		"wait":  handleWait,
 		"log":   handleLog,
 		"focus": handleFocus,
 	}
-	return registry
 }
 
 func Execute(commands []models.Command) error {
