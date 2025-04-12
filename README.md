@@ -102,8 +102,10 @@ winscript docs
 - [ ] Loops (`repeat`, `while`)
 - [ ] User-defined functions
 - [ ] REPL / interactive mode
+- [ ] RayLib dependency
 - [ ] GUI interface
 - [ ] Windows Installer (`.msi`)
+- [ ] WS IDE (for winscript)
 
 ---
 
