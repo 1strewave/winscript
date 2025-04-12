@@ -9,7 +9,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("WinScript version 0.1")
+		fmt.Println("WinScript version 0.2")
 	},
 }
 

@@ -5,8 +5,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var helpCmd = &cobra.Command{
-	Use:   "help",
+var docsCmd = &cobra.Command{
+	Use:   "docs",
 	Short: "Show all supported keywords",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Available commands:")
@@ -21,5 +21,5 @@ var helpCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(helpCmd)
+	rootCmd.AddCommand(docsCmd)
 }

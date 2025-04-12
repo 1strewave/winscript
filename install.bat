@@ -1,28 +1,28 @@
 @echo off
 setlocal
 
-REM Получаем текущую директорию
+REM Getting current directory
 set "CURRENT_DIR=%~dp0"
 set "CURRENT_DIR=%CURRENT_DIR:~0,-1%"
 
-REM Проверка, есть ли уже путь в PATH
-echo Проверка, добавлен ли путь в PATH...
+REM Check if PATH exists
+echo Check, does path added to PATH...
 echo.
 
 echo %PATH% | find /I "%CURRENT_DIR%" >nul
 if %ERRORLEVEL%==0 (
-    echo ❗ Путь уже добавлен в PATH: %CURRENT_DIR%
+    echo ❗ Path already added in PATH: %CURRENT_DIR%
     goto end
 )
 
-REM Добавляем в PATH (только для текущего пользователя)
-echo 🔧 Добавление в PATH: %CURRENT_DIR%
+REM Adding to PATH
+echo 🔧 Adding to PATH: %CURRENT_DIR%
 setx PATH "%PATH%;%CURRENT_DIR%"
 
 if %ERRORLEVEL%==0 (
-    echo ✅ Успешно добавлено! Перезапусти терминал, чтобы изменения вступили в силу.
+    echo ✅ Successfully added! Restart terminal, for the changes to take effect.
 ) else (
-    echo ❌ Произошла ошибка при добавлении в PATH.
+    echo ❌ An error occurred while adding to PATH.
 )
 
 :end

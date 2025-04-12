@@ -19,7 +19,11 @@ var rootCmd = &cobra.Command{
 				fmt.Println("Error parsing script:", err)
 				return
 			}
-			runtime.Execute(script)
+
+			if err := runtime.Execute(script); err != nil {
+				fmt.Println("Error executing script:", err)
+				os.Exit(1)
+			}
 		} else {
 			cmd.Help()
 		}
