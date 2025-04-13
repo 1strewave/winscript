@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf16"
@@ -20,13 +21,14 @@ type CommandRegistry map[string]CommandHandler
 
 func NewCommandRegistry() CommandRegistry {
 	return CommandRegistry{
-		"open":   handleOpen,
-		"type":   handleType,
-		"wait":   handleWait,
-		"log":    handleLog,
-		"focus":  handleFocus,
-		"press":  handlePress,
-		"hotkey": handleHotkey,
+		"open":       handleOpen,
+		"type":       handleType,
+		"wait":       handleWait,
+		"log":        handleLog,
+		"focus":      handleFocus,
+		"press":      handlePress,
+		"hotkey":     handleHotkey,
+		"move_mouse": handleMoveMouse,
 	}
 }
 
@@ -121,6 +123,24 @@ func handleHotkey(cmd models.Command) error {
 
 	combo := cmd.Args[0]
 	return pressHotkey(combo)
+}
+
+func handleMoveMouse(cmd models.Command) error {
+	if len(cmd.Args) < 2 {
+		return fmt.Errorf("'move_mouse' requires two arguments (X Y coordinates)")
+	}
+
+	x, err := strconv.Atoi(cmd.Args[0])
+	if err != nil {
+		return fmt.Errorf("invalid X coordinate '%s': %w", cmd.Args[0], err)
+	}
+
+	y, err := strconv.Atoi(cmd.Args[1])
+	if err != nil {
+		return fmt.Errorf("invalid Y coordinate '%s': %w", cmd.Args[1], err)
+	}
+
+	return moveMouse(x, y)
 }
 
 func UTF16PtrFromString(s string) *uint16 {
@@ -280,4 +300,20 @@ func getKeyCode(key string) (int, error) {
 	}
 
 	return 0, fmt.Errorf("unsupported key: %s", key)
+}
+
+func moveMouse(x, y int) error {
+	screenWidth := int(win.GetSystemMetrics(win.SM_CXSCREEN))
+	screenHeight := int(win.GetSystemMetrics(win.SM_CYSCREEN))
+
+	if x < 0 || x > screenWidth || y < 0 || y > screenHeight {
+		return fmt.Errorf("coordinates (%d, %d) are outside screen bounds (0--%d, 0--%d)",
+			x, y, screenWidth, screenHeight)
+	}
+
+	win.SetCursorPos(int32(x), int32(y))
+
+	time.Sleep(50 * time.Millisecond)
+
+	return nil
 }
