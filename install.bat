@@ -14,7 +14,7 @@ if %ERRORLEVEL%==0 (
     echo ❗ Path already added in PATH: %CURRENT_DIR%
     goto end
 )
-
+а
 REM Adding to PATH
 echo 🔧 Adding to PATH: %CURRENT_DIR%
 setx PATH "%PATH%;%CURRENT_DIR%"

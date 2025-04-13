@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os/exec"
+	"strings"
 	"time"
 	"unicode/utf16"
 
@@ -19,11 +20,13 @@ type CommandRegistry map[string]CommandHandler
 
 func NewCommandRegistry() CommandRegistry {
 	return CommandRegistry{
-		"open":  handleOpen,
-		"type":  handleType,
-		"wait":  handleWait,
-		"log":   handleLog,
-		"focus": handleFocus,
+		"open":   handleOpen,
+		"type":   handleType,
+		"wait":   handleWait,
+		"log":    handleLog,
+		"focus":  handleFocus,
+		"press":  handlePress,
+		"hotkey": handleHotkey,
 	}
 }
 
@@ -102,6 +105,24 @@ func handleFocus(cmd models.Command) error {
 	return focusWindow(cmd.Args[0])
 }
 
+func handlePress(cmd models.Command) error {
+	if len(cmd.Args) < 1 {
+		return fmt.Errorf("'press' requires one argument (key)")
+	}
+
+	key := cmd.Args[0]
+	return pressKey(key)
+}
+
+func handleHotkey(cmd models.Command) error {
+	if len(cmd.Args) < 1 {
+		return fmt.Errorf("'hotkey' requires one argument (combo)")
+	}
+
+	combo := cmd.Args[0]
+	return pressHotkey(combo)
+}
+
 func UTF16PtrFromString(s string) *uint16 {
 	encoded := utf16.Encode([]rune(s))
 	encoded = append(encoded, 0)
@@ -155,4 +176,108 @@ func typeViaClipboard(text string) error {
 	}
 
 	return nil
+}
+
+func pressKey(key string) error {
+	keyCode, err := getKeyCode(key)
+	if err != nil {
+		return err
+	}
+
+	kb, err := keybd_event.NewKeyBonding()
+	if err != nil {
+		return fmt.Errorf("failed to create keyboard event: %w", err)
+	}
+
+	kb.SetKeys(keyCode)
+
+	func() {
+		defer func() {
+			releaseErr := kb.Release()
+			if releaseErr != nil {
+				fmt.Printf("Warning: failed to release key: %v\n", releaseErr)
+			}
+			time.Sleep(100 * time.Millisecond)
+		}()
+
+		time.Sleep(50 * time.Millisecond)
+		if err := kb.Press(); err != nil {
+			fmt.Printf("Warning: failed to press key: %v\n", err)
+			return
+		}
+		time.Sleep(100 * time.Millisecond)
+	}()
+
+	time.Sleep(100 * time.Millisecond)
+
+	return nil
+}
+
+func pressHotkey(combo string) error {
+	parts := strings.Split(combo, "+")
+	if len(parts) < 2 {
+		return fmt.Errorf("hotkey must include at least one modifier and a key, separated by '+' (e.g., 'ctrl+s')")
+	}
+
+	key := parts[len(parts)-1]
+	keyCode, err := getKeyCode(key)
+	if err != nil {
+		return err
+	}
+
+	kb, err := keybd_event.NewKeyBonding()
+	if err != nil {
+		return fmt.Errorf("failed to create keyboard event: %w", err)
+	}
+
+	kb.SetKeys(keyCode)
+
+	for i := 0; i < len(parts)-1; i++ {
+		modifier := strings.ToLower(parts[i])
+		switch modifier {
+		case "ctrl":
+			kb.HasCTRL(true)
+		case "alt":
+			kb.HasALT(true)
+		case "shift":
+			kb.HasSHIFT(true)
+		case "win":
+			kb.HasSuper(true)
+		default:
+			return fmt.Errorf("unsupported modifier: %s. Supported modifiers are: ctrl, alt, shift, win", modifier)
+		}
+	}
+
+	func() {
+		defer func() {
+			releaseErr := kb.Release()
+			if releaseErr != nil {
+				fmt.Printf("Warning: failed to release hotkey: %v\n", releaseErr)
+			}
+			time.Sleep(100 * time.Millisecond)
+		}()
+
+		time.Sleep(50 * time.Millisecond)
+		if err := kb.Press(); err != nil {
+			fmt.Printf("Warning: failed to press hotkey: %v\n", err)
+			return
+		}
+		time.Sleep(100 * time.Millisecond)
+	}()
+
+	time.Sleep(100 * time.Millisecond)
+
+	return nil
+}
+
+func getKeyCode(key string) (int, error) {
+	key = strings.TrimSpace(key)
+	key = strings.Trim(key, "\"'")
+	key = strings.ToLower(key)
+
+	if code, ok := models.KeyMap[key]; ok {
+		return code, nil
+	}
+
+	return 0, fmt.Errorf("unsupported key: %s", key)
 }
