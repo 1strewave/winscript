@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 	"unicode/utf16"
+	"unsafe"
 
 	"github.com/1strewave/winscript/internal/models"
 	"github.com/atotto/clipboard"
@@ -29,6 +30,7 @@ func NewCommandRegistry() CommandRegistry {
 		"press":      handlePress,
 		"hotkey":     handleHotkey,
 		"move_mouse": handleMoveMouse,
+		"click":      handleClick,
 	}
 }
 
@@ -141,6 +143,15 @@ func handleMoveMouse(cmd models.Command) error {
 	}
 
 	return moveMouse(x, y)
+}
+
+func handleClick(cmd models.Command) error {
+	if len(cmd.Args) < 1 {
+		return fmt.Errorf("'click' requires one argument (button)")
+	}
+
+	button := strings.ToLower(cmd.Args[0])
+	return mouseClick(button)
 }
 
 func UTF16PtrFromString(s string) *uint16 {
@@ -313,6 +324,37 @@ func moveMouse(x, y int) error {
 
 	win.SetCursorPos(int32(x), int32(y))
 
+	time.Sleep(50 * time.Millisecond)
+
+	return nil
+}
+
+func mouseClick(button string) error {
+	var down, up uint32
+
+	switch button {
+	case "left":
+		down = win.MOUSEEVENTF_LEFTDOWN
+		up = win.MOUSEEVENTF_LEFTUP
+	case "right":
+		down = win.MOUSEEVENTF_RIGHTDOWN
+		up = win.MOUSEEVENTF_RIGHTUP
+	case "middle":
+		down = win.MOUSEEVENTF_MIDDLEDOWN
+		up = win.MOUSEEVENTF_MIDDLEUP
+	default:
+		return fmt.Errorf("unsupported mouse button: %s. Supported buttons are: left, right, middle", button)
+	}
+
+	var input win.MOUSE_INPUT
+	input.Type = win.INPUT_MOUSE
+
+	input.Mi.DwFlags = down
+	win.SendInput(1, unsafe.Pointer(&input), int32(unsafe.Sizeof(input)))
+	time.Sleep(50 * time.Millisecond)
+
+	input.Mi.DwFlags = up
+	win.SendInput(1, unsafe.Pointer(&input), int32(unsafe.Sizeof(input)))
 	time.Sleep(50 * time.Millisecond)
 
 	return nil
